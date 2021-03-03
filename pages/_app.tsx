@@ -1,0 +1,14 @@
+import { UserProvider } from '@auth0/nextjs-auth0'
+import type { AppProps } from 'next/app'
+
+import 'tailwindcss/tailwind.css'
+
+const BookSwapApp = ({ Component, pageProps }: AppProps) => {
+  return (
+    <UserProvider>
+      <Component {...pageProps} />
+    </UserProvider>
+  )
+}
+
+export default BookSwapApp
