@@ -1,5 +1,3 @@
-import React, { FC } from 'react'
-
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 
@@ -8,14 +6,18 @@ import { fetcher } from '../utils'
 
 import { Transition } from '@headlessui/react'
 
-export const RefinedSearch: FC<{
+export const RefinedSearch = ({
+  isOpen,
+  setIsOpen,
+  queryCallback,
+}: {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  queryCallback: (params: {
+  queryCallback(params: {
     school: 'any' | string
     level: 'any' | 1 | 2 | 3 | 4 | 5
-  }) => void
-}> = ({ isOpen, setIsOpen, queryCallback }) => {
+  }): any
+}) => {
   const { register, handleSubmit } = useForm<{
     school: 'Any school' | string
     level:

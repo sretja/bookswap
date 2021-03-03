@@ -1,5 +1,3 @@
-import React, { FC } from 'react'
-
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 
@@ -8,18 +6,22 @@ import { fetcher } from '../utils'
 
 import { Transition } from '@headlessui/react'
 
-export const NewUser: FC<{
+export const NewUser = ({
+  isOpen,
+  setIsOpen,
+  queryCallback,
+}: {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  queryCallback: (params: {
+  queryCallback(params: {
     id: string
     username: string
     name: string
     phone: string
     email: string
     picture: string
-  }) => Promise<Response>
-}> = ({ isOpen, setIsOpen, queryCallback }) => {
+  }): any
+}) => {
   const { register, handleSubmit } = useForm<{
     username: string
     name: string
@@ -28,7 +30,7 @@ export const NewUser: FC<{
 
   const { data, error } = useSWR('/api/auth/me', fetcher)
 
-  if (error) return setIsOpen(false)
+  if (error) setIsOpen(false)
 
   const onSubmit = async ({
     username,

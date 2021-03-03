@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import { useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { useUser } from '@auth0/nextjs-auth0'
@@ -9,10 +9,14 @@ import { Spinner } from '.'
 import { Transition } from '@headlessui/react'
 import { fetcher } from '../utils'
 
-export const NewBook: FC<{
+export const NewBook = ({
+  isOpen,
+  setIsOpen,
+  queryCallback,
+}: {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  queryCallback: (params: {
+  queryCallback(params: {
     school: string
     name: string
     author: string
@@ -20,8 +24,8 @@ export const NewBook: FC<{
     level: number
     picture: string
     seller: string
-  }) => Promise<Response>
-}> = ({ isOpen, setIsOpen, queryCallback }) => {
+  }): any
+}) => {
   const { register, handleSubmit } = useForm<{
     school: string
     name: string
@@ -41,7 +45,7 @@ export const NewBook: FC<{
   const { user, error } = useUser()
   const { data: schools } = useSWR('/api/schools', fetcher)
 
-  if (error) return setIsOpen(false)
+  if (error) setIsOpen(false)
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsUploading(true)
