@@ -6,7 +6,9 @@ import { FaunaClient as client } from '../../../../utils'
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query
   try {
-    const books = await client.query(
+    const books: {
+      [key: string]: any
+    } = await client.query(
       q.Map(q.Paginate(q.Match(q.Index('books_by_seller'), id)), (e) =>
         q.Get(e)
       )

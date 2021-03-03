@@ -14,10 +14,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         'Required query parameters missing. <name & username & phone & [user]id>',
     })
   try {
-    const user = await client.query(
+    const user: {
+      [key: string]: any
+    } = await client.query(
       q.Map(q.Paginate(q.Match(q.Index('users_by_id'), id)), (e) => q.Get(e))
     )
-    const updatedUser = await client.query(
+    const updatedUser: {
+      [key: string]: any
+    } = await client.query(
       q.Update(user.data[0].ref, {
         data: {
           name: name,

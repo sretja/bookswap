@@ -14,7 +14,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       error: 'Required query parameters missing. <[book]id>',
     })
   try {
-    const book = await client.query(q.Get(q.Ref(q.Collection('books'), id)))
+    const book: {
+      [key: string]: any
+    } = await client.query(q.Get(q.Ref(q.Collection('books'), id)))
     const newBook = await client.query(
       q.Create(q.Collection('sold_books'), {
         data: book.data,

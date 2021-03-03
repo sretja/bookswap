@@ -5,7 +5,9 @@ import { FaunaClient as client } from '../../../utils'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const users = await client.query(
+    const users: {
+      [key: string]: any
+    } = await client.query(
       q.Map(q.Paginate(q.Match(q.Index('all_users'))), (ref) => q.Get(ref))
     )
     return res.status(200).json(users.data)

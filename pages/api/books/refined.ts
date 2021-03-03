@@ -8,7 +8,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (school && lvl) {
     try {
       let result = []
-      const booksBySchool = await client.query(
+      const booksBySchool: {
+        [key: string]: any
+      } = await client.query(
         q.Map(q.Paginate(q.Match(q.Index('books_by_school'), school)), (e) =>
           q.Get(e)
         )
@@ -23,7 +25,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } else if (school) {
     try {
-      const booksBySchool = await client.query(
+      const booksBySchool: {
+        [key: string]: any
+      } = await client.query(
         q.Map(q.Paginate(q.Match(q.Index('books_by_school'), school)), (e) =>
           q.Get(e)
         )
@@ -34,7 +38,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } else if (lvl) {
     try {
-      const booksByLevel = await client.query(
+      const booksByLevel: {
+        [key: string]: any
+      } = await client.query(
         q.Map(
           q.Paginate(q.Match(q.Index('books_by_level'), Number(lvl))),
           (e) => q.Get(e)
@@ -45,7 +51,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(500).json({ error: e.message })
     }
   } else {
-    const books = await client.query(
+    const books: {
+      [key: string]: any
+    } = await client.query(
       q.Map(q.Paginate(q.Match(q.Index('all_books'))), (ref) => q.Get(ref))
     )
     return res.status(200).json(books.data)

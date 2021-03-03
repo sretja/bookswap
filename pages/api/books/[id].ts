@@ -23,7 +23,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
   try {
-    const books = await client.query(q.Get(q.Ref(q.Collection('books'), id)))
+    const books: {
+      [key: string]: any
+    } = await client.query(q.Get(q.Ref(q.Collection('books'), id)))
     return res.status(200).json(books.data)
   } catch (e) {
     return res.status(500).json({ error: e.message })

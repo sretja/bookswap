@@ -14,7 +14,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       error: 'Required query parameters missing. <[book]id>',
     })
   try {
-    const book = await client.query(q.Get(q.Ref(q.Collection('books'), id)))
+    const book: {
+      [key: string]: any
+    } = await client.query(q.Get(q.Ref(q.Collection('books'), id)))
     const deletedBook = await client.query(q.Delete(book.ref))
     return res.status(200).json(deletedBook)
   } catch (e) {

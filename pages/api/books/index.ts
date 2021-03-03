@@ -7,7 +7,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { q: query } = req.query
   if (query) {
     try {
-      const names = await client.query(
+      const names: {
+        [key: string]: any
+      } = await client.query(
         q.Filter(
           q.Paginate(q.Match(q.Index('books_by_name'))),
           q.Lambda(
@@ -36,7 +38,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
   try {
-    const books = await client.query(
+    const books: {
+      [key: string]: any
+    } = await client.query(
       q.Map(q.Paginate(q.Match(q.Index('all_books'))), (ref) => q.Get(ref))
     )
     return res.status(200).json(books.data)
