@@ -31,7 +31,7 @@ export const RefinedSearch = ({
 
   const { data: schoolList, error } = useSWR('/api/schools/', fetcher)
 
-  if (error) return setIsOpen(false)
+  if (error) setIsOpen(false)
 
   const onSubmit = ({
     school,

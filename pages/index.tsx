@@ -43,8 +43,7 @@ const Home = () => {
   )
 
   const onQuery = ({ query }: { query: string }) => {
-    if (!query) return undefined
-    router.push('/q' + '?q=' + query)
+    if (query) router.push('/q' + '?q=' + query)
   }
 
   return (
