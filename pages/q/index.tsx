@@ -13,9 +13,14 @@ import {
   SearchOutline,
 } from '@graywolfai/react-heroicons'
 
+import { en, fr } from '../../locales'
+
 const Query = () => {
   const router = useRouter()
+  const { locale } = router
   const { q, author, lvl } = router.query
+
+  const t = locale === 'fr' ? fr.q : en.q
 
   const [isUsingRefinedSearch, setIsUsingRefinedSearch] = useState<boolean>(
     false
@@ -44,7 +49,7 @@ const Query = () => {
 
   if (error)
     return (
-      <div className="flex items-center justify-center bg-gray-100">
+      <div className="flex items-center justify-center w-screen h-screen bg-gray-100">
         <p className="text-gray-500">Something went wrong.</p>
         <p className="text-red-500">{error}</p>
       </div>
@@ -106,7 +111,7 @@ const Query = () => {
                 name="search"
                 id="search"
                 className="w-full h-20 text-lg text-gray-500 placeholder-gray-300 border-0 border-b border-gray-300 focus:outline-none lg:text-xl focus:border-gray-300 focus-within:border-gray-300 focus:ring-opacity-0"
-                placeholder="Search..."
+                placeholder={t.searchPlaceholder}
                 onChange={handleQueryChange}
                 value={q || ''}
                 autoFocus
@@ -116,11 +121,7 @@ const Query = () => {
 
             <div className="flex items-center justify-center h-20 border-b border-gray-300">
               <a
-                title={
-                  author || lvl
-                    ? 'Click to disable refined search'
-                    : 'Refined search'
-                }
+                title={author || lvl ? t.refined.disable : t.refined.enable}
                 onClick={() => {
                   author || lvl
                     ? router.push('/q', undefined, { shallow: true })
@@ -148,9 +149,7 @@ const Query = () => {
                     className="flex items-center justify-center w-screen"
                     style={{ height: '85vh' }}
                   >
-                    <p className="text-gray-500">
-                      Your query did not return any results.
-                    </p>
+                    <p className="text-gray-500">{t.noResults}</p>
                   </div>
                 ) : (
                   data.map((book) => (

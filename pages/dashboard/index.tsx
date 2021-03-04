@@ -9,6 +9,8 @@ import Notiflix from 'notiflix'
 import { NewBook, Spinner, DashboardBookPreview } from '../../components'
 import { ChevronLeftSolid, PlusSmSolid } from '@graywolfai/react-heroicons'
 
+import { en, fr } from '../../locales'
+
 const Dashboard = () => {
   const [isCreatingNewListing, setIsCreatingNewListing] = useState<boolean>(
     false
@@ -32,6 +34,9 @@ const Dashboard = () => {
   }, [])
 
   const router = useRouter()
+  const { locale } = router
+
+  const t = locale === 'fr' ? fr.dashboard : en.dashboard
 
   const { data: userData, error: userError } = useSWR('/api/auth/me', fetcher)
   const { data: faunaUserData, error: faunaUserError } = useSWR(
@@ -79,7 +84,7 @@ const Dashboard = () => {
 
   if (userError || faunaUserError || error)
     return (
-      <div className="flex items-center justify-center bg-gray-100">
+      <div className="flex items-center justify-center w-screen h-screen bg-gray-100">
         <p className="text-gray-500">Something went wrong.</p>
         <p className="text-red-500">{error}</p>
       </div>
@@ -128,27 +133,28 @@ const Dashboard = () => {
                 className="flex flex-row items-center pr-4 text-gray-400 transition duration-150 cursor-pointer hover:text-gray-600"
               >
                 <ChevronLeftSolid className="w-10 h-10 md:w-8 md:h-8" />
-                <p className="hidden text-sm font-semibold md:block">Go Back</p>
+                <p className="hidden text-sm font-semibold md:block">
+                  {t.back}
+                </p>
               </a>
               <div className="flex flex-row w-full space-x-8 md:w-auto sm:justify-between">
                 <a
                   className="flex flex-row items-center space-x-1 text-indigo-500 transition duration-150 cursor-pointer hover:text-indigo-700"
                   onClick={() => {
                     if (data.length >= 5 && !faunaUserData.sudo)
-                      return Notiflix.Notify.Failure(
-                        'You have reached the limit of 5 listings. Contact us at josef.leventon@gmail.com to increase your limit.'
-                      )
+                      return Notiflix.Notify.Failure(t.alert)
                     setIsCreatingNewListing(true)
                   }}
                 >
                   <PlusSmSolid className="w-4 h-4" />
-                  <p className="text-sm">New Listing</p>
+                  <p className="text-sm">{t.new}</p>
                 </a>
                 <div className="flex flex-row items-center space-x-4">
                   <div className="flex flex-row items-center space-x-2">
                     <img
                       src={userData.picture}
                       className="w-8 h-8 rounded-full"
+                      alt={userData.username}
                     />
                     <p className="hidden font-semibold text-black sm:block">
                       {faunaUserData.name}
@@ -158,7 +164,7 @@ const Dashboard = () => {
                     href="/api/auth/logout"
                     className="text-sm text-gray-500 transition duration-150 md:text-base hover:text-gray-700"
                   >
-                    Log out
+                    {t.logout}
                   </a>
                 </div>
               </div>
@@ -166,10 +172,8 @@ const Dashboard = () => {
             <main className="px-4 pt-24 md:px-8 lg:px-12">
               <div className="flex flex-col space-x-0 md:space-x-8 md:flex-row">
                 <div className="w-full h-full p-4 md:w-1/2">
-                  <h3 className="text-2xl font-semibold">Listings</h3>
-                  <p className="text-gray-500">
-                    Your currently visible listings
-                  </p>
+                  <h3 className="text-2xl font-semibold">{t.listings.title}</h3>
+                  <p className="text-gray-500">{t.listings.description}</p>
                   <style jsx>
                     {`
                       #book-preview-box: {
@@ -199,8 +203,8 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="static w-full h-full p-4 md:fixed right-4 md:w-1/2">
-                  <h3 className="text-2xl font-semibold">Account</h3>
-                  <p className="text-gray-500">Your personal information</p>
+                  <h3 className="text-2xl font-semibold">{t.account.title}</h3>
+                  <p className="text-gray-500">{t.account.description}</p>
                   <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col pt-3 space-y-3"
@@ -210,7 +214,7 @@ const Dashboard = () => {
                         htmlFor="name"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Name
+                        {t.form.name}
                       </label>
                       <div className="mt-1">
                         <input
@@ -233,7 +237,7 @@ const Dashboard = () => {
                         htmlFor="username"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Username
+                        {t.form.username}
                       </label>
                       <div className="mt-1">
                         <input
@@ -256,7 +260,7 @@ const Dashboard = () => {
                         htmlFor="email"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Email (cannot be changed)
+                        {t.form.email}
                       </label>
                       <div className="mt-1">
                         <input
@@ -274,7 +278,7 @@ const Dashboard = () => {
                         htmlFor="phone"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Phone no.
+                        {t.form.phone}
                       </label>
                       <div className="mt-1">
                         <input
@@ -301,12 +305,11 @@ const Dashboard = () => {
                         disabled={isChangeButtonDisabled}
                         aria-disabled={isChangeButtonDisabled}
                       >
-                        Change
+                        {t.form.submit}
                       </button>
                     </div>
                     <p className="text-sm text-gray-500">
-                      If you wish to have your account deleted, please contact
-                      us at{' '}
+                      {t.form.disclaimer}{' '}
                       <a
                         className="text-indigo-500 transition duration-150 hover:text-indigo-700"
                         href={`mailto:josef.leventon@gmail.com?subject=Account deletion for ${faunaUserData.name} - ${faunaUserData.id}`}

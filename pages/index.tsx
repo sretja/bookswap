@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Transition } from '@headlessui/react'
@@ -12,6 +12,8 @@ import { fetcher } from '../utils'
 
 import { MenuOutline, XOutline } from '@graywolfai/react-heroicons'
 
+import { en, fr } from '../locales'
+
 const Home = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
   const { register, handleSubmit } = useForm<{
@@ -21,6 +23,8 @@ const Home = () => {
   const [isNewUserPopupOpen, setIsNewUserPopupOpen] = useState<boolean>(false)
 
   const router = useRouter()
+  const { locale } = router
+  const t = locale === 'fr' ? fr.home : en.home
 
   const { user } = useUser()
 
@@ -41,6 +45,17 @@ const Home = () => {
       },
     }
   )
+
+  const handleLocaleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    switch (e.currentTarget.value) {
+      case 'en':
+        router.push('/', undefined, { locale: 'en', shallow: true })
+        break
+      case 'fr':
+        router.push('/', undefined, { locale: 'fr', shallow: true })
+        break
+    }
+  }
 
   const onQuery = ({ query }: { query: string }) => {
     if (query) router.push('/q' + '?q=' + query)
@@ -89,15 +104,23 @@ const Home = () => {
               >
                 <div className="flex items-center flex-1">
                   <div className="flex items-center justify-between w-full md:w-auto">
-                    <a
-                      href="#"
-                      className="flex flex-row items-center space-x-2"
-                    >
+                    <div className="flex flex-row items-center space-x-2">
                       <Logo className="w-auto h-8 text-indigo-50 sm:h-10" />
                       <span className="hidden text-lg font-semibold md:block text-indigo-50">
                         Bookswap
                       </span>
-                    </a>
+                      <div className="flex flex-row items-center pl-2 -space-x-1">
+                        <p>{locale === 'fr' ? '🇫🇷' : '🇬🇧'}</p>
+                        <select
+                          onChange={handleLocaleChange}
+                          className="text-white bg-transparent border-0 rounded-md ring-0 focus:ring-0"
+                          defaultValue={locale}
+                        >
+                          <option value="en">en</option>
+                          <option value="fr">fr</option>
+                        </select>
+                      </div>
+                    </div>
                     <div className="flex flex-row items-center -mr-2 space-x-2 md:hidden">
                       {user ? (
                         <div className="flex flex-row items-center space-x-3">
@@ -108,6 +131,7 @@ const Home = () => {
                             src={user.picture}
                             alt={user.nickname}
                             className="w-8 h-8 rounded-full shadow-md"
+                            loading="lazy"
                           />
                         </div>
                       ) : (
@@ -119,7 +143,7 @@ const Home = () => {
                         className="inline-flex items-center justify-center p-2 text-gray-400 bg-gray-900 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white"
                         aria-expanded="false"
                       >
-                        <span className="sr-only">Open main menu</span>
+                        <span className="sr-only">{t.sr.mainMenu}</span>
                         <MenuOutline className="w-6 h-6" aria-hidden="true" />
                       </button>
                     </div>
@@ -134,14 +158,14 @@ const Home = () => {
                         className="w-8 h-8 rounded-full shadow-md"
                       />
                       <p className="text-base font-medium text-gray-300">
-                        Logged in as{' '}
+                        {t.auth.loggedIn}{' '}
                         <span className="text-white">{faunaUserData.name}</span>
                       </p>
                       <a
                         href="/api/auth/logout"
                         className="text-base font-medium text-white underline cursor-pointer hover:text-gray-300"
                       >
-                        Log out
+                        {t.auth.logout}
                       </a>
                     </div>
                   ) : (
@@ -149,7 +173,7 @@ const Home = () => {
                       href="/api/auth/login"
                       className="text-base font-medium text-white cursor-pointer hover:text-gray-300"
                     >
-                      Log in
+                      {t.auth.login}
                     </a>
                   )}
                   {user ? (
@@ -157,14 +181,14 @@ const Home = () => {
                       onClick={() => router.push('/dashboard')}
                       className="inline-flex items-center px-4 py-2 text-base font-medium text-white transition duration-150 bg-gray-600 border border-transparent rounded-md cursor-pointer hover:bg-gray-700"
                     >
-                      Dashboard
+                      {t.auth.dashboard}
                     </a>
                   ) : (
                     <a
                       href="/api/auth/login"
                       className="inline-flex items-center px-4 py-2 text-base font-medium text-white transition duration-150 bg-gray-600 border border-transparent rounded-md hover:bg-gray-700"
                     >
-                      Start selling textbooks
+                      {t.auth.cta}
                     </a>
                   )}
                 </div>
@@ -194,7 +218,7 @@ const Home = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="inline-flex items-center justify-center p-2 text-gray-400 bg-white rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                       >
-                        <span className="sr-only">Close menu</span>
+                        <span className="sr-only">{t.sr.closeMenu}</span>
                         <XOutline className="w-6 h-6" aria-hidden="true" />
                       </button>
                     </div>
@@ -206,14 +230,14 @@ const Home = () => {
                           onClick={() => router.push('/dashboard')}
                           className="block w-full px-4 py-3 font-medium text-center text-white transition duration-150 bg-indigo-600 rounded-md shadow hover:bg-indigo-700"
                         >
-                          Dashboard
+                          {t.auth.dashboard}
                         </a>
                       ) : (
                         <a
                           href="/api/auth/login"
                           className="block w-full px-4 py-3 font-medium text-center text-white transition duration-150 bg-indigo-600 rounded-md shadow hover:bg-indigo-700"
                         >
-                          Start selling textbooks
+                          {t.auth.cta}
                         </a>
                       )}
                     </div>
@@ -224,13 +248,13 @@ const Home = () => {
                             href="/api/auth/logout"
                             className="hover:underline"
                           >
-                            Log out
+                            {t.auth.logout}
                           </a>
                         </p>
                       ) : (
                         <p className="text-base font-medium text-center text-gray-500 transition duration-150 hover:text-gray-700">
                           <a href="/api/auth/login" className="hover:underline">
-                            Log in
+                            {t.auth.login}
                           </a>
                         </p>
                       )}
@@ -248,19 +272,15 @@ const Home = () => {
                   <div className="max-w-md px-4 mx-auto sm:max-w-2xl sm:px-6 sm:text-center lg:px-0 lg:text-left lg:flex lg:items-center">
                     <div className="lg:py-12">
                       <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-white sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
-                        <span className="block">
-                          Buy and sell textbooks for
-                        </span>
+                        <span className="block">{t.hero.title.white}</span>
                         <span className="block text-indigo-400">
-                          half the price
+                          {t.hero.title.indigo}
                         </span>
                       </h1>
                       <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                        Why pay egregious amounts of money to buy textbooks
-                        you'll only use for a year?
+                        {t.hero.p[0]}
                         <br />
-                        Why throw away perfectly usable textbooks when you can
-                        recoup half the price?
+                        {t.hero.p[1]}
                       </p>
                       <div className="mt-10 sm:mt-12">
                         <form
@@ -270,13 +290,13 @@ const Home = () => {
                           <div className="sm:flex">
                             <div className="flex-1 min-w-0">
                               <label htmlFor="query" className="sr-only">
-                                Enter the name of a textbook
+                                {t.sr.inputLabel}
                               </label>
                               <input
                                 id="query"
                                 name="query"
                                 type="text"
-                                placeholder="Enter the name of a textbook..."
+                                placeholder={t.hero.inputPlaceholder}
                                 className="block w-full px-4 py-3 text-base text-gray-900 placeholder-gray-500 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300 focus:ring-offset-gray-900"
                                 ref={register}
                               />
@@ -286,7 +306,7 @@ const Home = () => {
                                 type="submit"
                                 className="block w-full px-8 py-3 font-medium text-white transition duration-150 transform bg-indigo-500 rounded-md shadow hover:-translate-y-0.5 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300 focus:ring-offset-gray-900"
                               >
-                                Search!
+                                {t.hero.search}
                               </button>
                             </div>
                           </div>
@@ -295,15 +315,11 @@ const Home = () => {
                               onClick={() => router.push('/q')}
                               className="block w-full px-8 py-3 font-medium text-white transition duration-150 transform bg-indigo-500 rounded-md shadow hover:-translate-y-0.5 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300 focus:ring-offset-gray-900"
                             >
-                              See all listings
+                              {t.hero.seeAll}
                             </button>
                           </div>
                           <p className="mt-3 text-sm text-gray-300 sm:mt-4">
-                            An account is not required to search.{' '}
-                            <a href="#" className="font-medium text-white">
-                              Certain data
-                            </a>{' '}
-                            may be collected from the user.
+                            {t.hero.disclaimer}
                           </p>
                         </form>
                       </div>
@@ -314,7 +330,8 @@ const Home = () => {
                     <img
                       className="w-full lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
                       src="https://tailwindui.com/img/component-images/cloud-illustration-indigo-400.svg"
-                      alt=""
+                      loading="lazy"
+                      alt="Graphic"
                     />
                   </div>
                 </div>

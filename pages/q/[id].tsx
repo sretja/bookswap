@@ -11,9 +11,14 @@ import {
   MailSolid,
 } from '@graywolfai/react-heroicons'
 
+import { fr, en } from '../../locales'
+
 const QueryDetail = () => {
   const router = useRouter()
+  const { locale } = router
   const { id } = router.query
+
+  const t = locale === 'fr' ? fr.qid : en.qid
 
   const fetchData = () => {
     let { data, error } = useSWR('/api/books/' + id, fetcher)
@@ -31,7 +36,7 @@ const QueryDetail = () => {
 
   if (error || sellerError)
     return (
-      <div className="flex items-center justify-center bg-gray-100">
+      <div className="flex items-center justify-center w-screen h-screen bg-gray-100">
         <p className="text-gray-500">Something went wrong.</p>
         <p className="text-red-500">{error}</p>
       </div>
@@ -46,7 +51,7 @@ const QueryDetail = () => {
             className="absolute top-0 left-0 flex flex-row items-center p-6 text-gray-400 transition duration-150 cursor-pointer hover:text-gray-600"
           >
             <ChevronLeftSolid className="w-6 h-6 " />
-            <p className="text-sm font-semibold ">Go Back</p>
+            <p className="text-sm font-semibold ">{t.back}</p>
           </a>
           <div className="flex flex-col-reverse justify-start ml-0 space-x-0 space-y-4 md:ml-12 lg:ml-24 md:space-y-0 md:space-x-4 md:flex-row">
             <div className="w-full h-auto p-6 md:w-1/2 lg:w-1/3">
@@ -67,11 +72,17 @@ const QueryDetail = () => {
               <h3 className="text-xl text-indigo-500 lg:text-2xl">
                 {data.price}
               </h3>
-              <h4 className="text-indigo-500">Secondary {data.level}</h4>
+              <h4 className="text-indigo-500">
+                {t.secondary} {data.level}
+              </h4>
               <span className="mt-6"></span>
               <div className="flex flex-row items-center space-x-2">
                 {seller.picture ? (
-                  <img src={seller.picture} className="w-8 h-8 rounded-full" />
+                  <img
+                    src={seller.picture}
+                    alt={data.name}
+                    className="w-8 h-8 rounded-full"
+                  />
                 ) : (
                   <UserCircleSolid className="w-8 h-8 text-gray-500" />
                 )}
@@ -79,7 +90,7 @@ const QueryDetail = () => {
               </div>
               <span className="mt-10"></span>
               <h6 className="mb-1 text-lg font-semibold lg:text-xl">
-                Contact this seller
+                {t.contact}
               </h6>
               {seller.phone ? (
                 <a
