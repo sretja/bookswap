@@ -44,7 +44,7 @@ export const fr = {
   dashboard: {
     back: 'Retour',
     new: 'Ajouter un livre',
-    logout: 'Log out',
+    logout: 'Déconnection',
     alert:
       "Vous avez atteint la limite de 5 livres. Contactez nous au josef.leventon@gmail.com pour l'augmenter.",
     listings: {

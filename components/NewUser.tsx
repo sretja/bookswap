@@ -1,10 +1,13 @@
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 
+import { useRouter } from 'next/router'
+
 import { Spinner } from '../components'
 import { fetcher } from '../utils'
 
 import { Transition } from '@headlessui/react'
+import { en, fr } from '../locales/components'
 
 export const NewUser = ({
   isOpen,
@@ -27,6 +30,9 @@ export const NewUser = ({
     name: string
     phone: string
   }>()
+
+  const { locale } = useRouter()
+  const t = locale === 'fr' ? fr.newUser : en.newUser
 
   const { data, error } = useSWR('/api/auth/me', fetcher)
 
@@ -103,13 +109,10 @@ export const NewUser = ({
                       className="text-lg font-medium leading-6 text-gray-900"
                       id="modal-headline"
                     >
-                      Welcome to Bookswap!
+                      {t.title}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        We need some more information about you before you can
-                        continue.
-                      </p>
+                      <p className="text-sm text-gray-500">{t.description}</p>
                     </div>
                     <div className="mt-4">
                       <div className="py-2">
@@ -117,7 +120,7 @@ export const NewUser = ({
                           htmlFor="username"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Username
+                          {t.form.username}
                         </label>
                         <div className="mt-1">
                           <input
@@ -140,7 +143,7 @@ export const NewUser = ({
                           htmlFor="name"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Name
+                          {t.form.name}
                         </label>
                         <div className="mt-1">
                           <input
@@ -163,7 +166,7 @@ export const NewUser = ({
                           htmlFor="email"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Email
+                          {t.form.email}
                         </label>
                         <div className="mt-1">
                           <input
@@ -182,7 +185,7 @@ export const NewUser = ({
                           htmlFor="phone"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Phone no.
+                          {t.form.phone}
                         </label>
                         <div className="mt-1">
                           <input
@@ -207,7 +210,7 @@ export const NewUser = ({
                           htmlFor="picture"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Profile picture URL
+                          {t.form.picture.title}
                         </label>
                         <div className="mt-1">
                           <input
@@ -215,7 +218,6 @@ export const NewUser = ({
                             name="picture"
                             id="picture"
                             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="+1 123-456-7890"
                             defaultValue={data.picture}
                             disabled
                           />
@@ -225,7 +227,7 @@ export const NewUser = ({
                             target="_blank"
                             className="ml-2 text-sm text-left text-indigo-600 underline transition duration-150 hover:text-indigo-800"
                           >
-                            You can change it here.
+                            {t.form.picture.description}
                           </a>
                         </div>
                       </div>
@@ -237,7 +239,7 @@ export const NewUser = ({
                     type="submit"
                     className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
                   >
-                    Complete signup
+                    {t.form.submit}
                   </button>
                 </div>
               </form>

@@ -5,6 +5,8 @@ import Swal from 'sweetalert2'
 
 import { CheckSolid, TrashSolid } from '@graywolfai/react-heroicons'
 
+import { en, fr } from '../locales/components'
+
 export const DashboardBookPreview: FC<{
   name: string
   author: string
@@ -13,6 +15,9 @@ export const DashboardBookPreview: FC<{
   id: string
 }> = ({ name, author, price, picture, id }) => {
   const router = useRouter()
+  const { locale } = router
+
+  const t = locale === 'fr' ? fr.dashboardPreview : en.dashboardPreview
 
   return (
     <div className="flex flex-row w-auto h-52 md:h-48">
@@ -32,11 +37,10 @@ export const DashboardBookPreview: FC<{
             type="button"
             onClick={async () => {
               Swal.fire({
-                title:
-                  'Are you sure that you want to mark this listing as sold?',
-                text: 'This action is irreversible!',
+                title: t.sold.alert.title,
+                text: t.sold.alert.description,
                 showCloseButton: true,
-                confirmButtonText: 'Yes, mark as sold.',
+                confirmButtonText: t.sold.alert.confirm,
                 confirmButtonColor: 'red',
               }).then(async (res) => {
                 if (res.isConfirmed) {
@@ -50,16 +54,16 @@ export const DashboardBookPreview: FC<{
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-white transition duration-150 transform bg-indigo-600 border border-transparent rounded-md shadow-sm hover:-translate-y-1 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <CheckSolid className="w-4 h-4 mr-2 -ml-1" aria-hidden="true" />
-            Mark as sold
+            {t.sold.title}
           </button>
           <button
             type="button"
             onClick={async () => {
               Swal.fire({
-                title: 'Are you sure that you want to delete this listing?',
-                text: 'This action is irreversible!',
+                title: t.delete.alert.title,
+                text: t.delete.alert.description,
                 showCloseButton: true,
-                confirmButtonText: 'Yes, delete.',
+                confirmButtonText: t.delete.alert.confirm,
                 confirmButtonColor: 'red',
               }).then(async (res) => {
                 if (res.isConfirmed) {
@@ -73,7 +77,7 @@ export const DashboardBookPreview: FC<{
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-600 transition duration-150 transform bg-indigo-100 border border-transparent rounded-md shadow-sm hover:-translate-y-1 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <TrashSolid className="w-4 h-4 mr-2 -ml-1" aria-hidden="true" />
-            Remove
+            {t.delete.title}
           </button>
         </div>
       </div>

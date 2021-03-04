@@ -1,10 +1,13 @@
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 
+import { useRouter } from 'next/router'
+
 import { Spinner } from '../components'
 import { fetcher } from '../utils'
 
 import { Transition } from '@headlessui/react'
+import { en, fr } from '../locales/components'
 
 export const RefinedSearch = ({
   isOpen,
@@ -32,6 +35,9 @@ export const RefinedSearch = ({
   const { data: schoolList, error } = useSWR('/api/schools/', fetcher)
 
   if (error) setIsOpen(false)
+
+  const { locale } = useRouter()
+  const t = locale === 'fr' ? fr.refined : en.refined
 
   const onSubmit = ({
     school,
@@ -129,14 +135,10 @@ export const RefinedSearch = ({
                       className="text-lg font-medium leading-6 text-gray-900"
                       id="modal-headline"
                     >
-                      Refined Search
+                      {t.title}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        Refined Search allows you to refine your query to
-                        specific levels or schools. Note that the regular text
-                        search is deactivated when using Refined Search.
-                      </p>
+                      <p className="text-sm text-gray-500">{t.description}</p>
                     </div>
                     <div className="mt-4">
                       <div>
@@ -144,7 +146,7 @@ export const RefinedSearch = ({
                           htmlFor="school"
                           className="text-sm font-medium text-gray-700 sr-only"
                         >
-                          school
+                          {t.school.sr}
                         </label>
                         <select
                           id="school"
@@ -152,7 +154,7 @@ export const RefinedSearch = ({
                           className="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           ref={register}
                         >
-                          <option value="Any school">Any school</option>
+                          <option value="Any school">{t.school.any}</option>
                           {schoolList.map((school) => (
                             <option value={school} key={school}>
                               {school}
@@ -165,7 +167,7 @@ export const RefinedSearch = ({
                           htmlFor="level"
                           className="text-sm font-medium text-gray-700 sr-only"
                         >
-                          Level
+                          {t.level.sr}
                         </label>
                         <select
                           id="level"
@@ -173,7 +175,7 @@ export const RefinedSearch = ({
                           className="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           ref={register}
                         >
-                          <option value="Any level">Any level</option>
+                          <option value="Any level">{t.level.any}</option>
                           <option value="Secondary I">Secondary I</option>
                           <option value="Secondary II">Secondary II</option>
                           <option value="Secondary III">Secondary III</option>
@@ -189,14 +191,14 @@ export const RefinedSearch = ({
                     type="submit"
                     className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
                   >
-                    Search
+                    {t.submit}
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
                     type="button"
                     className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                   >
-                    Cancel
+                    {t.cancel}
                   </button>
                 </div>
               </form>

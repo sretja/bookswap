@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 import { useForm } from 'react-hook-form'
 import { useUser } from '@auth0/nextjs-auth0'
@@ -8,6 +9,7 @@ import { Spinner } from '.'
 
 import { Transition } from '@headlessui/react'
 import { fetcher } from '../utils'
+import { en, fr } from '../locales/components'
 
 export const NewBook = ({
   isOpen,
@@ -38,6 +40,9 @@ export const NewBook = ({
       | 'Secondary IV'
       | 'Secondary V'
   }>()
+
+  const { locale } = useRouter()
+  const t = locale === 'fr' ? fr.newBook : en.newBook
 
   const [picture, setPicture] = useState<string>()
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -176,13 +181,10 @@ export const NewBook = ({
                       className="text-lg font-medium leading-6 text-gray-900"
                       id="modal-headline"
                     >
-                      New listing
+                      {t.title}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        We need some information about your new listing to make
-                        it public.
-                      </p>
+                      <p className="text-sm text-gray-500">{t.description}</p>
                     </div>
                     <div className="mt-4">
                       <div className="py-2">
@@ -190,7 +192,7 @@ export const NewBook = ({
                           htmlFor="name"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Name
+                          {t.form.title}
                         </label>
                         <div className="mt-1">
                           <input
@@ -211,7 +213,7 @@ export const NewBook = ({
                           htmlFor="author"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Author
+                          {t.form.author}
                         </label>
                         <div className="mt-1">
                           <input
@@ -232,7 +234,7 @@ export const NewBook = ({
                           htmlFor="school"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          School
+                          {t.form.school}
                         </label>
                         <div className="mt-1">
                           <select
@@ -254,7 +256,7 @@ export const NewBook = ({
                           htmlFor="price"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Price ($xx.xx)
+                          {t.form.price}
                         </label>
                         <div className="mt-1">
                           <input
@@ -277,7 +279,7 @@ export const NewBook = ({
                           htmlFor="level"
                           className="block ml-2 text-sm font-medium text-left text-gray-700"
                         >
-                          Level
+                          {t.form.level}
                         </label>
                         <select
                           id="level"
@@ -295,7 +297,7 @@ export const NewBook = ({
                       </div>
                       <div className="py-2">
                         <label className="block text-sm font-medium text-left text-gray-700">
-                          Cover photo
+                          {t.form.photo.title}
                         </label>
                         {isUploading ? (
                           <div className="flex flex-col items-center justify-center p-8">
@@ -324,7 +326,7 @@ export const NewBook = ({
                                     htmlFor="file-upload"
                                     className="relative font-medium text-indigo-600 bg-white rounded-md cursor-pointer hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                                   >
-                                    <span>Upload an image</span>
+                                    <span>{t.form.photo.upload}</span>
                                     <input
                                       id="file-upload"
                                       name="file-upload"
@@ -333,7 +335,7 @@ export const NewBook = ({
                                       onChange={handleFileUpload}
                                     />
                                   </label>
-                                  <p className="pl-1">or drag and drop</p>
+                                  <p className="pl-1">{t.form.photo.drag}</p>
                                 </div>
                                 <p className="text-xs text-gray-500">
                                   PNG, JPG, GIF up to 10MB
@@ -360,14 +362,14 @@ export const NewBook = ({
                     type="submit"
                     className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white transition duration-150 bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
                   >
-                    Create listing
+                    {t.form.confirm}
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
                     type="button"
                     className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 transition duration-150 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                   >
-                    Cancel
+                    {t.form.cancel}
                   </button>
                 </div>
               </form>

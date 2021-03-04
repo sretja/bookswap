@@ -4,6 +4,8 @@ import { fetcher } from '../../utils'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
+import { useUser } from '@auth0/nextjs-auth0'
+
 import Notiflix from 'notiflix'
 
 import { NewBook, Spinner, DashboardBookPreview } from '../../components'
@@ -20,6 +22,11 @@ const Dashboard = () => {
     false
   )
 
+  const router = useRouter()
+  const { locale } = router
+
+  const { user } = useUser()
+
   useEffect(() => {
     Notiflix.Notify.Init({
       position: 'right-bottom',
@@ -31,10 +38,8 @@ const Dashboard = () => {
       timeout: 1500,
       showOnlyTheLastOne: true,
     })
+    if (!user) router.push('/auth')
   }, [])
-
-  const router = useRouter()
-  const { locale } = router
 
   const t = locale === 'fr' ? fr.dashboard : en.dashboard
 
@@ -85,10 +90,23 @@ const Dashboard = () => {
   if (userError || faunaUserError || error)
     return (
       <div className="flex items-center justify-center w-screen h-screen bg-gray-100">
-        <p className="text-gray-500">Something went wrong.</p>
+        <p className="text-gray-500">
+          Something went wrong. You might not be logged in.
+        </p>
         <p className="text-red-500">{error}</p>
       </div>
     )
+
+  const handleLocaleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    switch (e.currentTarget.value) {
+      case 'en':
+        router.push('/dashboard', undefined, { locale: 'en', shallow: true })
+        break
+      case 'fr':
+        router.push('/dashboard', undefined, { locale: 'fr', shallow: true })
+        break
+    }
+  }
 
   return (
     <div>
@@ -128,15 +146,28 @@ const Dashboard = () => {
         {userData && faunaUserData && data ? (
           <div>
             <header className="fixed top-0 z-10 flex items-center justify-between w-screen px-4 py-5 bg-white border-b-2 border-gray-200 md:px-8 lg:px-12">
-              <a
-                onClick={() => router.back()}
-                className="flex flex-row items-center pr-4 text-gray-400 transition duration-150 cursor-pointer hover:text-gray-600"
-              >
-                <ChevronLeftSolid className="w-10 h-10 md:w-8 md:h-8" />
-                <p className="hidden text-sm font-semibold md:block">
-                  {t.back}
-                </p>
-              </a>
+              <div className="flex flex-row space-x-2">
+                <a
+                  onClick={() => router.push('/', undefined, { locale })}
+                  className="flex flex-row items-center pr-4 text-gray-400 transition duration-150 cursor-pointer hover:text-gray-600"
+                >
+                  <ChevronLeftSolid className="w-10 h-10 md:w-8 md:h-8" />
+                  <p className="hidden text-sm font-semibold md:block">
+                    {t.back}
+                  </p>
+                </a>
+                <div className="flex-row items-center hidden pl-2 -space-x-1 md:flex">
+                  <p>{locale === 'fr' ? '🇫🇷' : '🇬🇧'}</p>
+                  <select
+                    onChange={handleLocaleChange}
+                    className="text-gray-600 bg-transparent border-0 rounded-md ring-0 focus:ring-0"
+                    defaultValue={locale}
+                  >
+                    <option value="en">en</option>
+                    <option value="fr">fr</option>
+                  </select>
+                </div>
+              </div>
               <div className="flex flex-row w-full space-x-8 md:w-auto sm:justify-between">
                 <a
                   className="flex flex-row items-center space-x-1 text-indigo-500 transition duration-150 cursor-pointer hover:text-indigo-700"
